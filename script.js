@@ -31,15 +31,13 @@ const markdownBox = document.getElementById("markdown");
 const copyShort = document.getElementById("copyShort");
 const copyMarkdown = document.getElementById("copyMarkdown");
 
-const toast = document.getElementById("toast");
-
-// Preview
-
 const preview = document.getElementById("preview");
 const previewImage = document.getElementById("previewImage");
 const favicon = document.getElementById("favicon");
 const title = document.getElementById("title");
 const description = document.getElementById("description");
+
+const toast = document.getElementById("toast");
 
 // ======================
 // TOAST
@@ -48,7 +46,6 @@ const description = document.getElementById("description");
 function showToast(text){
 
     toast.textContent = text;
-
     toast.style.display = "block";
 
     setTimeout(()=>{
@@ -60,14 +57,23 @@ function showToast(text){
 }
 
 // ======================
-// CLEAN HYPER TEXT
+// HANYA UNTUK TEKS HYPER LINK
+// URL ASLI TIDAK DIUBAH
 // ======================
 
-function cleanHyperText(url){
+function cleanHyperText(link){
 
-    return url
-        .replace(/^https?:\/\/www\./i,"https://")
-        .replace(/^https?:\/\/[^\/]*roblox[^\/]*\/games/i,"https://roblox.com/games");
+    try{
+
+        const u = new URL(link);
+
+        return "https://roblox.com" + u.pathname + u.search;
+
+    }catch{
+
+        return link;
+
+    }
 
 }
 
@@ -97,12 +103,13 @@ if(sessionStorage.getItem("login")==="true"){
 
 }
 
-loginBtn.addEventListener("click",()=>{
+loginBtn.onclick = ()=>{
 
     if(apikey.value.trim()!==API_KEY){
 
         loginStatus.textContent="❌ API Key Salah";
         loginStatus.style.color="red";
+
         return;
 
     }
@@ -112,9 +119,9 @@ loginBtn.addEventListener("click",()=>{
 
     openDashboard();
 
-});
+};
 
-logoutBtn.addEventListener("click",()=>{
+logoutBtn.onclick = ()=>{
 
     sessionStorage.removeItem("login");
 
@@ -122,32 +129,18 @@ logoutBtn.addEventListener("click",()=>{
 
     openLogin();
 
-});
-// ======================
-// CLEAN URL
-// ======================
-
-function cleanURL(text){
-
-    if(!text) return "";
-
-    text = text.trim();
-
-    return text;
-
-}
-
+};
 // ======================
 // VALIDASI
 // ======================
 
 function validate(){
 
-    start.disabled = !url.value.trim().startsWith("https://");
+    start.disabled = url.value.trim() === "";
 
 }
 
-url.addEventListener("input",validate);
+url.addEventListener("input", validate);
 
 // ======================
 // PREVIEW
@@ -173,13 +166,13 @@ function showPreview(link){
 // START
 // ======================
 
-start.addEventListener("click",async()=>{
+start.onclick = async()=>{
 
     const original = url.value.trim();
 
-    if(!original.startsWith("https://")){
+    if(original===""){
 
-        showToast("URL harus diawali https://");
+        showToast("Masukkan URL");
 
         return;
 
@@ -189,18 +182,21 @@ start.addEventListener("click",async()=>{
 
     result.style.display="none";
 
+    preview.style.display="none";
+
     start.disabled=true;
 
     try{
 
+        // URL ASLI DISIMPAN TANPA DIUBAH
         const code = await createShort(original);
 
         const short =
-        "https://condogames.my.id/"+code;
+        "https://condogames.my.id/" + code;
 
         shortBox.value = short;
 
-        // HANYA TEKS YANG DIHYPERLINK DIBERSIHKAN
+        // HANYA TEKS HYPER LINK YANG DIUBAH
         const hyperText = cleanHyperText(original);
 
         markdownBox.value =
@@ -210,13 +206,13 @@ start.addEventListener("click",async()=>{
 
         result.style.display="block";
 
-        showToast("Berhasil membuat Short Link");
+        showToast("Short Link berhasil dibuat");
 
     }catch(e){
 
-        console.log(e);
+        console.error(e);
 
-        showToast("Terjadi kesalahan");
+        showToast("Gagal membuat Short Link");
 
     }
 
@@ -224,12 +220,12 @@ start.addEventListener("click",async()=>{
 
     validate();
 
-});
+};
 // ======================
 // COPY SHORT LINK
 // ======================
 
-copyShort.addEventListener("click", async()=>{
+copyShort.onclick = async()=>{
 
     if(shortBox.value===""){
 
@@ -253,13 +249,13 @@ copyShort.addEventListener("click", async()=>{
 
     showToast("Short Link berhasil disalin");
 
-});
+};
 
 // ======================
 // COPY HYPER LINK
 // ======================
 
-copyMarkdown.addEventListener("click", async()=>{
+copyMarkdown.onclick = async()=>{
 
     if(markdownBox.value===""){
 
@@ -283,7 +279,7 @@ copyMarkdown.addEventListener("click", async()=>{
 
     showToast("Hyper Link berhasil disalin");
 
-});
+};
 
 // ======================
 // ENTER
@@ -327,13 +323,15 @@ function resetForm(){
 
 }
 
+resetForm();
+
+validate();
+
 // ======================
 // AUTO FOCUS
 // ======================
 
-window.addEventListener("load",()=>{
-
-    validate();
+window.onload=()=>{
 
     if(sessionStorage.getItem("login")==="true"){
 
@@ -349,4 +347,30 @@ window.addEventListener("load",()=>{
 
     }
 
-});
+};
+
+// ======================
+// LOGOUT
+// ======================
+
+logoutBtn.onclick=()=>{
+
+    sessionStorage.removeItem("login");
+
+    apikey.value="";
+
+    url.value="";
+
+    shortBox.value="";
+
+    markdownBox.value="";
+
+    result.style.display="none";
+
+    preview.style.display="none";
+
+    loginStatus.textContent="";
+
+    openLogin();
+
+};
