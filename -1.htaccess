@@ -1,8 +1,0 @@
-RewriteEngine On
-
-# Jangan redirect kalau file/folder-nya memang ada (misal index.php sendiri, links.json)
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-
-# Ubah /KODE menjadi /shortener.php?code=KODE
-RewriteRule ^([A-Za-z0-9]+)$ shortener.php?code=$1 [QSA,L]
