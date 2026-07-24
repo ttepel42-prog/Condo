@@ -2,30 +2,41 @@ import { createShort } from "./firebase.js";
 
 const API_KEY = "CIMEMEX";
 
-const keyInput = document.getElementById("apikey");
-const keyStatus = document.getElementById("keyStatus");
+// =========================
+// Login
+// =========================
 
-const urlInput = document.getElementById("url");
+const loginPage = document.getElementById("loginPage");
+const dashboard = document.getElementById("dashboard");
 
-const startBtn = document.getElementById("start");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const apikey = document.getElementById("apikey");
+const loginStatus = document.getElementById("loginStatus");
+
+// =========================
+// Dashboard
+// =========================
+
+const url = document.getElementById("url");
+const start = document.getElementById("start");
 
 const loading = document.getElementById("loading");
 
 const result = document.getElementById("result");
 
 const shortBox = document.getElementById("short");
-
 const markdownBox = document.getElementById("markdown");
 
 const copyShort = document.getElementById("copyShort");
-
 const copyMarkdown = document.getElementById("copyMarkdown");
 
 const toast = document.getElementById("toast");
 
-// ==========================
+// =========================
 // Toast
-// ==========================
+// =========================
 
 function showToast(text){
 
@@ -40,19 +51,63 @@ function showToast(text){
     },2000);
 
 }
-// ==========================
-// Toast
-// ==========================
 
-function showToast(text){
+// =========================
+// Login
+// =========================
 
-    ...
+function openDashboard(){
+
+    loginPage.style.display="none";
+
+    dashboard.style.display="block";
+
+    sessionStorage.setItem("login","true");
 
 }
 
-// ==========================
+function logout(){
+
+    sessionStorage.removeItem("login");
+
+    dashboard.style.display="none";
+
+    loginPage.style.display="flex";
+
+    apikey.value="";
+
+}
+
+if(sessionStorage.getItem("login")=="true"){
+
+    openDashboard();
+
+}
+
+loginBtn.onclick=()=>{
+
+    if(apikey.value===API_KEY){
+
+        loginStatus.innerHTML="✅ Login Berhasil";
+
+        loginStatus.style.color="#00ff88";
+
+        openDashboard();
+
+    }else{
+
+        loginStatus.innerHTML="❌ API Key Salah";
+
+        loginStatus.style.color="red";
+
+    }
+
+};
+
+logoutBtn.onclick=logout;
+// =========================
 // Clean URL
-// ==========================
+// =========================
 
 function cleanURL(text){
 
@@ -60,6 +115,7 @@ function cleanURL(text){
 
     text = text.trim();
 
+    // Ambil URL jika ada teks lain
     const urlMatch = text.match(/https?:\/\/[^\s]+/i);
 
     if(urlMatch){
@@ -68,8 +124,17 @@ function cleanURL(text){
 
     }
 
+    // Jika tidak ada https:// tetapi ada roblox.com
+    if(!text.startsWith("http") && text.includes("roblox.com")){
+
+        text = "https://" + text;
+
+    }
+
+    // Hapus www.
     text = text.replace(/^https?:\/\/www\./i,"https://");
 
+    // Paksa domain menjadi roblox.com
     const games = text.match(/\/games\/.+/i);
 
     if(games){
@@ -82,57 +147,53 @@ function cleanURL(text){
 
 }
 
-// ==========================
-// Validasi Key
-// ==========================
-
-
-
-// ==========================
-// Validasi Key + URL
-// ==========================
+// =========================
+// Validasi URL
+// =========================
 
 function validate(){
 
-    if(keyInput.value === API_KEY){
+    const value = cleanURL(url.value);
 
-        keyStatus.innerHTML = "✅ Key Benar";
-
-        keyStatus.style.color = "#00ff88";
-
-    }else{
-
-        keyStatus.innerHTML = "❌ Key Salah";
-
-        keyStatus.style.color = "#ff5555";
-
-    }
-
-    startBtn.disabled = !(
-
-        keyInput.value === API_KEY &&
-
-        urlInput.value.startsWith("https://")
-
-    );
+    start.disabled = !value.startsWith("https://");
 
 }
 
-keyInput.addEventListener("input",validate);
+url.addEventListener("input",validate);
 
-// ==========================
+url.addEventListener("paste",()=>{
+
+    setTimeout(()=>{
+
+        url.value = cleanURL(url.value);
+
+        validate();
+
+    },50);
+
+});
+
+url.addEventListener("blur",()=>{
+
+    url.value = cleanURL(url.value);
+
+    validate();
+
+});
+
+// =========================
 // START
-// ==========================
+// =========================
 
-startBtn.addEventListener("click", async () => {
+start.onclick = async()=>{
 
-    let original = cleanURL(urlInput.value);
+    let original = cleanURL(url.value);
 
-    urlInput.value = original;
+    url.value = original;
 
-    if (!original.startsWith("https://")) {
+    if(!original.startsWith("https://")){
 
-        showToast("URL harus diawali https://");
+        showToast("URL tidak valid");
 
         return;
 
@@ -142,31 +203,29 @@ startBtn.addEventListener("click", async () => {
 
     result.style.display = "none";
 
-    startBtn.disabled = true;
+    start.disabled = true;
 
-    try {
+    try{
 
-        // Membuat Short Link
         const code = await createShort(original);
 
-        const shortLink =
-            "https://condogames.my.id/" + code;
+        const short =
+        "https://condogames.my.id/" + code;
 
-        // Tampilkan hasil
-        shortBox.value = shortLink;
+        shortBox.value = short;
 
         markdownBox.value =
-            `[${original}](${shortLink})`;
+        `[${original}](${short})`;
 
         result.style.display = "block";
 
-        showToast("Short Link Berhasil Dibuat");
+        showToast("Short Link berhasil dibuat");
 
-    } catch (err) {
+    }catch(e){
 
-        console.error(err);
+        console.log(e);
 
-        showToast("Gagal membuat Short Link");
+        showToast("Terjadi kesalahan");
 
     }
 
@@ -174,19 +233,16 @@ startBtn.addEventListener("click", async () => {
 
     validate();
 
-});
-urlInput.addEventListener("input",validate);
-// ==========================
-// COPY SHORT LINK
-// ==========================
+};
+// =========================
+// Copy Short Link
+// =========================
 
-copyShort.addEventListener("click", async () => {
+copyShort.onclick = async()=>{
 
     try{
 
-        await navigator.clipboard.writeText(
-            shortBox.value
-        );
+        await navigator.clipboard.writeText(shortBox.value);
 
         showToast("Short Link berhasil disalin");
 
@@ -200,19 +256,17 @@ copyShort.addEventListener("click", async () => {
 
     }
 
-});
+};
 
-// ==========================
-// COPY HYPER LINK
-// ==========================
+// =========================
+// Copy Hyper Link
+// =========================
 
-copyMarkdown.addEventListener("click", async () => {
+copyMarkdown.onclick = async()=>{
 
     try{
 
-        await navigator.clipboard.writeText(
-            markdownBox.value
-        );
+        await navigator.clipboard.writeText(markdownBox.value);
 
         showToast("Hyper Link berhasil disalin");
 
@@ -226,62 +280,68 @@ copyMarkdown.addEventListener("click", async () => {
 
     }
 
-});
+};
 
-// ==========================
-// AUTO CLEAN URL SAAT PASTE
-// ==========================
+// =========================
+// Enter = Login / Start
+// =========================
 
-urlInput.addEventListener("paste", () => {
+document.addEventListener("keydown",(e)=>{
 
-    setTimeout(() => {
+    if(e.key !== "Enter") return;
 
-        urlInput.value = cleanURL(urlInput.value);
+    // Jika masih di halaman login
+    if(loginPage.style.display !== "none"){
 
-        validate();
+        loginBtn.click();
 
-    }, 50);
+        return;
 
-});
+    }
 
-// ==========================
-// AUTO CLEAN SAAT MENGETIK
-// ==========================
+    // Jika sudah di dashboard
+    if(!start.disabled){
 
-urlInput.addEventListener("blur", () => {
-
-    urlInput.value = cleanURL(urlInput.value);
-
-    validate();
-
-});
-
-// ==========================
-// ENTER = START
-// ==========================
-
-document.addEventListener("keydown", (e) => {
-
-    if(e.key === "Enter" && !startBtn.disabled){
-
-        startBtn.click();
+        start.click();
 
     }
 
 });
 
-// ==========================
-// RESET
-// ==========================
+// =========================
+// Reset
+// =========================
 
-function resetForm(){
+function reset(){
 
     loading.style.display = "none";
 
     result.style.display = "none";
 
+    validate();
+
 }
 
-resetForm();
+reset();
 
-validate();
+// =========================
+// Auto Focus
+// =========================
+
+if(sessionStorage.getItem("login")=="true"){
+
+    setTimeout(()=>{
+
+        url.focus();
+
+    },200);
+
+}else{
+
+    setTimeout(()=>{
+
+        apikey.focus();
+
+    },200);
+
+}
