@@ -1,2 +1,0 @@
-# Condo
-Condo
