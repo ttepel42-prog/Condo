@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redirect...</title>
+</head>
+<body style="font-family:Arial;text-align:center;padding:50px;background:#111827;color:white;">
+
+<h2>Mengalihkan...</h2>
+
+<p>Mohon tunggu sebentar.</p>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+import {
+    getFirestore,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyB8SB-GZiR-Q76sx-VTg0JtkiBmqUTqIiM",
+
+    authDomain: "cimerx-10ea2.firebaseapp.com",
+
+    projectId: "cimerx-10ea2",
+
+    storageBucket: "cimerx-10ea2.firebasestorage.app",
+
+    messagingSenderId: "6223214966",
+
+    appId: "1:6223214966:web:088e36fcf6eca1beb4e257"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+// Ambil kode dari URL
+const code = location.pathname.replace(/^\/+/,"");
+
+if(!code){
+
+    location.href="/";
+
+}
+
+const snap = await getDoc(
+    doc(db,"shortlinks",code)
+);
+
+if(!snap.exists()){
+
+    document.body.innerHTML = `
+    <h2>404</h2>
+    <p>Short Link tidak ditemukan.</p>
+    `;
+
+}else{
+
+    location.replace(
+        snap.data().url
+    );
+
+}
+
+</script>
+
+</body>
+</html>

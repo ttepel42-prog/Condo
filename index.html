@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CIMERX Hyper + Short Link</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<div class="container">
+
+    <h1>CIMERX</h1>
+
+    <p class="subtitle">
+        Hyper Link + Short Link Generator
+    </p>
+
+    <input
+        id="url"
+        type="text"
+        placeholder="https://..."
+        autocomplete="off"
+    >
+
+    <button
+        id="start"
+        disabled>
+        START
+    </button>
+
+    <div
+        id="loading"
+        class="loading"
+        style="display:none;">
+        Membuat Short Link...
+    </div>
+
+    <div
+        id="preview"
+        class="preview"
+        style="display:none;">
+
+        <img
+            id="image"
+            src=""
+            alt="Preview">
+
+        <div class="info">
+
+            <img
+                id="favicon"
+                class="favicon"
+                src=""
+                alt="">
+
+            <div>
+
+                <h3 id="title">
+                    -
+                </h3>
+
+                <p id="description">
+                    -
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        id="result"
+        style="display:none;">
+
+        <label>
+            Short Link
+        </label>
+
+        <input
+            id="short"
+            readonly>
+
+        <button
+            id="copyShort">
+            Copy Short Link
+        </button>
+
+        <label>
+            Hyper Link
+        </label>
+
+        <textarea
+            id="markdown"
+            readonly></textarea>
+
+        <button
+            id="copyMarkdown">
+            Copy Hyper Link
+        </button>
+
+    </div>
+
+</div>
+
+<!-- Firebase -->
+<script type="module" src="firebase.js"></script>
+
+<!-- Logic -->
+<script type="module" src="script.js"></script>
+
+</body>
+</html>
