@@ -5,26 +5,91 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>condosmap</title>
+<title>CIMERX Hyper + Short Link</title>
 
-<meta name="theme-color"
-content="#0f172a">
+<meta name="theme-color" content="#0f172a">
 
-<link rel="stylesheet"
-href="style.css">
+<link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-<div class="container">
+<!-- LOGIN -->
+
+<div id="loginPage" class="page">
+
+<div class="card loginCard">
+
+<h1>CIMERX</h1>
+
+<p class="subtitle">
+
+Hyper Link + Short Link
+
+</p>
+
+<div class="logo">
+
+🔐
+
+</div>
+
+<label>
+
+Masukkan API Key
+
+</label>
+
+<input
+
+type="password"
+
+id="apikey"
+
+placeholder="API KEY">
+
+<button id="loginBtn">
+
+MASUK
+
+</button>
+
+<p id="loginStatus">
+
+Masukkan API Key untuk melanjutkan
+
+</p>
+
+</div>
+
+</div>
+
+<!-- DASHBOARD -->
+
+<div
+
+id="dashboard"
+
+class="page"
+
+style="display:none;">
 
 <div class="card">
 
+<div class="header">
+
 <h1>CIMERX</h1>
+
+<button id="logoutBtn">
+
+Logout
+
+</button>
+
+</div>
 
 <p class="subtitle">
 
@@ -32,37 +97,9 @@ Hyper Link + Short Link Generator
 
 </p>
 
-<!-- API KEY -->
-
 <label>
 
-API KEY
-
-</label>
-
-<input
-
-id="apikey"
-
-type="password"
-
-placeholder="Masukkan Key">
-
-<div
-
-id="keyStatus"
-
-class="status">
-
-Masukkan Key Terlebih Dahulu
-
-</div>
-
-<!-- URL -->
-
-<label>
-
-URL
+Masukkan URL Roblox
 
 </label>
 
@@ -72,7 +109,7 @@ id="url"
 
 type="text"
 
-placeholder="https://..."
+placeholder="https://roblox.com/games/..."
 
 autocomplete="off"
 
@@ -97,8 +134,6 @@ style="display:none;">
 Membuat Short Link...
 
 </div>
-
-<!-- Preview -->
 
 <div
 
@@ -128,19 +163,15 @@ alt="">
 
 <div>
 
-<h3
+<h3 id="title">
 
-id="title">
-
-Tidak Ada Judul
+Roblox
 
 </h3>
 
-<p
+<p id="description">
 
-id="description">
-
-Tidak Ada Deskripsi
+Preview akan muncul di sini
 
 </p>
 
@@ -151,14 +182,9 @@ Tidak Ada Deskripsi
 </div>
 
 </div>
+<!-- HASIL -->
 
-<!-- RESULT -->
-
-<div
-
-id="result"
-
-style="display:none;">
+<div id="result" style="display:none;">
 
 <label>
 
@@ -172,9 +198,7 @@ id="short"
 
 readonly>
 
-<button
-
-id="copyShort">
+<button id="copyShort">
 
 Copy Short Link
 
@@ -194,9 +218,7 @@ readonly>
 
 </textarea>
 
-<button
-
-id="copyMarkdown">
+<button id="copyMarkdown">
 
 Copy Hyper Link
 
@@ -208,7 +230,7 @@ Copy Hyper Link
 
 </div>
 
-<!-- Toast -->
+<!-- TOAST -->
 
 <div
 
@@ -220,21 +242,13 @@ Berhasil
 
 </div>
 
-<!-- Firebase -->
+<!-- FIREBASE -->
 
-<script type="module"
+<script type="module" src="firebase.js"></script>
 
-src="firebase.js">
+<!-- SCRIPT -->
 
-</script>
-
-<!-- Script -->
-
-<script type="module"
-
-src="script.js">
-
-</script>
+<script type="module" src="script.js"></script>
 
 </body>
 
