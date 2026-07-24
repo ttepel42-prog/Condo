@@ -1,0 +1,15 @@
+# ==========================================
+# Hyper Short Link
+# ==========================================
+
+RewriteEngine On
+
+# Jangan rewrite jika file atau folder memang ada
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirect shortlink
+RewriteRule ^([A-Za-z0-9]{6})/?$ go.php?c=$1 [L,QSA]
+
+# Halaman utama
+DirectoryIndex index.php
