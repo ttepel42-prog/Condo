@@ -8,62 +8,71 @@
 body{
     background:#0f172a;
     color:#fff;
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    min-height:100vh;
     padding:20px;
 }
 
+.page{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-box,
 .container{
     width:100%;
-    max-width:550px;
-}
-
-.card{
+    max-width:500px;
     background:#1e293b;
-    border-radius:18px;
+    border-radius:15px;
     padding:25px;
-    box-shadow:0 10px 30px rgba(0,0,0,.35);
+    box-shadow:0 0 20px rgba(0,0,0,.3);
 }
 
-h1{
+h1,h2{
     text-align:center;
     color:#38bdf8;
-    margin-bottom:5px;
-    font-size:32px;
+    margin-bottom:10px;
 }
 
-.subtitle{
+p{
     text-align:center;
     color:#94a3b8;
     margin-bottom:20px;
-    font-size:14px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.header h2{
+    margin:0;
 }
 
 label{
     display:block;
     margin-top:15px;
     margin-bottom:8px;
-    font-weight:bold;
     color:#38bdf8;
+    font-weight:bold;
 }
 
 input,
 textarea{
     width:100%;
-    padding:13px;
+    padding:12px;
     border:none;
     outline:none;
     border-radius:10px;
     background:#334155;
-    color:#fff;
-    font-size:14px;
-}
-
-input::placeholder,
-textarea::placeholder{
-    color:#94a3b8;
+    color:white;
+    font-size:15px;
 }
 
 textarea{
@@ -74,14 +83,13 @@ textarea{
 button{
     width:100%;
     margin-top:12px;
-    padding:13px;
+    padding:12px;
     border:none;
     border-radius:10px;
     background:#0ea5e9;
-    color:#fff;
-    cursor:pointer;
-    font-size:15px;
+    color:white;
     font-weight:bold;
+    cursor:pointer;
     transition:.2s;
 }
 
@@ -94,23 +102,22 @@ button:disabled{
     cursor:not-allowed;
 }
 
-.status{
-    margin-top:8px;
-    font-size:13px;
-    color:#facc15;
+#logoutBtn{
+    width:auto;
+    padding:10px 18px;
+    margin:0;
 }
 
 #loading{
     margin-top:15px;
     text-align:center;
     color:#38bdf8;
-    font-size:14px;
 }
 
 #preview{
     margin-top:20px;
     background:#334155;
-    border-radius:12px;
+    border-radius:10px;
     overflow:hidden;
 }
 
@@ -119,25 +126,20 @@ button:disabled{
     height:220px;
     object-fit:cover;
     display:block;
-    background:#1e293b;
 }
 
-.previewInfo{
-    padding:15px;
-}
-
-.top{
+.previewContent{
     display:flex;
     gap:12px;
+    padding:15px;
     align-items:flex-start;
 }
 
 #favicon{
-    width:42px;
-    height:42px;
-    border-radius:10px;
+    width:40px;
+    height:40px;
+    border-radius:8px;
     background:#fff;
-    object-fit:contain;
 }
 
 #title{
@@ -146,13 +148,21 @@ button:disabled{
 }
 
 #description{
-    color:#cbd5e1;
     font-size:13px;
-    line-height:1.5;
+    color:#cbd5e1;
+    text-align:left;
+    margin:0;
 }
 
 #result{
     margin-top:20px;
+}
+
+#loginStatus{
+    margin-top:15px;
+    text-align:center;
+    color:#facc15;
+    font-size:14px;
 }
 
 .toast{
@@ -165,18 +175,15 @@ button:disabled{
     padding:12px 20px;
     border-radius:10px;
     display:none;
+    z-index:9999;
     font-weight:bold;
-    z-index:999;
 }
 
 @media(max-width:600px){
 
-.card{
+.login-box,
+.container{
     padding:20px;
-}
-
-h1{
-    font-size:28px;
 }
 
 #previewImage{
