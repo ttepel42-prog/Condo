@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condogames</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg: #0a0b0f;
+        --grid-dot: rgba(139, 92, 246, 0.10);
+        --panel: #14161d;
+        --panel-2: #0d0f15;
+        --border: #262a35;
+        --accent: #8b5cf6;
+        --accent-soft: rgba(139, 92, 246, 0.15);
+        --cyan: #2dd4bf;
+        --text: #eef0f4;
+        --muted: #767c8c;
+        --error: #f4586b;
+        --mono: 'JetBrains Mono', monospace;
+        --sans: 'Inter', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--bg);
+        background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+        background-size: 24px 24px;
+        color: var(--text);
+        font-family: var(--sans);
+        padding: 20px;
+    }
+
+    /* ---------- Access panel (gerbang key) ---------- */
+    .access-panel {
+        width: 100%;
+        max-width: 400px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .access-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: var(--panel-2);
+        border-bottom: 1px solid var(--border);
+    }
+    .access-bar .dot {
+        width: 9px; height: 9px; border-radius: 50%;
+        background: var(--border);
+    }
+    .access-bar .dot.live { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+    .access-bar span.label {
+        margin-left: 6px;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        text-transform: uppercase;
+    }
+    .access-body {
+        padding: 32px 28px 28px;
+    }
+    .access-icon {
+        width: 42px; height: 42px;
+        border-radius: 10px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(139, 92, 246, 0.35);
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 18px;
+    }
+    .access-icon svg { width: 20px; height: 20px; stroke: var(--accent); }
+
+    .access-title {
+        font-family: var(--mono);
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0 0 6px;
+        letter-spacing: -0.01em;
+    }
+    .access-subtitle {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 0 0 24px;
+        line-height: 1.5;
+    }
+
+    .prompt-row {
+        display: flex;
+        align-items: center;
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 0 4px 0 14px;
+        margin-bottom: 8px;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .prompt-row:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .prompt-row .caret {
+        font-family: var(--mono);
+        color: var(--accent);
+        font-size: 14px;
+        margin-right: 8px;
+        user-select: none;
+    }
+    .prompt-row input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 14px;
+        padding: 13px 0;
+        outline: none;
+        letter-spacing: 0.02em;
+    }
+    .prompt-row input::placeholder { color: #4b5162; }
+    .toggle-visibility {
+        background: none; border: none; cursor: pointer;
+        color: var(--muted); padding: 8px; display: flex;
+    }
+    .toggle-visibility:hover { color: var(--text); }
+    .toggle-visibility svg { width: 17px; height: 17px; stroke: currentColor; }
+
+    .access-hint {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--error);
+        min-height: 16px;
+        margin-bottom: 14px;
+        visibility: hidden;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 13px;
+        border: none;
+        border-radius: 9px;
+        background: var(--accent);
+        color: #ffffff;
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.05s ease;
+    }
+    .btn-primary:hover:not(:disabled) { background: #9a6ffa; }
+    .btn-primary:active:not(:disabled) { transform: scale(0.99); }
+    .btn-primary:disabled {
+        background: #2c2f3a;
+        color: var(--muted);
+        cursor: not-allowed;
+    }
+
+    /* ---------- Tool card (setelah login) ---------- */
+    .tool-panel {
+        width: 100%;
+        max-width: 440px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 30px 28px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .tool-title {
+        font-family: var(--mono);
+        font-size: 19px;
+        font-weight: 700;
+        margin: 0 0 4px;
+    }
+    .tool-subtitle {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 0 0 22px;
+    }
+    input[type="text"].url-field {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: var(--panel-2);
+        color: var(--text);
+        font-size: 14px;
+        margin-bottom: 6px;
+        outline: none;
+        font-family: var(--sans);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    input[type="text"].url-field:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .hint {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 14px;
+        min-height: 16px;
+    }
+    .hint.error { color: var(--error); }
+    .hint.ok { color: var(--cyan); }
+
+    .result {
+        margin-top: 18px;
+        border-radius: 10px;
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        display: none;
+        overflow: hidden;
+    }
+    .result.show { display: block; }
+    .result.error-box { border-color: var(--error); padding: 14px; color: var(--error); font-size: 13px; }
+    .preview-img { width: 100%; height: 150px; object-fit: cover; background: #1c202a; display: block; }
+    .preview-body { padding: 14px; }
+    .preview-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .preview-header img { width: 16px; height: 16px; border-radius: 3px; }
+    .preview-header span { font-size: 11px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; }
+    .preview-title { font-weight: 600; font-size: 14px; margin: 0 0 4px; }
+    .preview-desc { font-size: 13px; color: var(--muted); margin: 0 0 12px; line-height: 1.4; }
+    .short-link-row { display: flex; gap: 8px; }
+    .short-link-row a {
+        flex: 1; color: var(--accent); word-break: break-all;
+        text-decoration: none; font-weight: 600; font-size: 13px;
+        align-self: center; font-family: var(--mono);
+    }
+    .short-link-row a:hover { text-decoration: underline; }
+    .copy-btn {
+        background: transparent; border: 1px solid var(--border);
+        color: var(--muted); font-size: 12px; padding: 8px 12px;
+        width: auto; white-space: nowrap; border-radius: 9px; cursor: pointer;
+        font-family: var(--mono);
+    }
+    .copy-btn:hover:not(:disabled) { background: var(--border); color: var(--text); }
+
+    .markdown-box {
+        margin: 0 14px 14px;
+        border-top: 1px solid var(--border);
+        padding-top: 12px;
+    }
+    .markdown-box label {
+        display: block;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 6px;
+    }
+    .markdown-box textarea {
+        width: 100%;
+        resize: vertical;
+        min-height: 60px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 12px;
+        padding: 10px;
+        margin-bottom: 8px;
+        line-height: 1.5;
+    }
+</style>
+</head>
+<body>
+
+<div class="access-panel" id="loginCard">
+    <div class="access-bar">
+        <div class="dot"></div><div class="dot"></div><div class="dot live"></div>
+        <span class="label">access_terminal</span>
+    </div>
+    <div class="access-body">
+        <div class="access-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+        <p class="access-title">Restricted Access</p>
+        <p class="access-subtitle">Masukkan access key untuk membuka Condogames Shortener.</p>
+
+        <div class="prompt-row">
+            <span class="caret">&gt;</span>
+            <input type="password" id="keyInput" placeholder="access key">
+            <button class="toggle-visibility" id="toggleVis" type="button" aria-label="Tampilkan key">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </button>
+        </div>
+        <div class="access-hint" id="loginHint">key salah — coba lagi</div>
+        <button class="btn-primary" id="loginBtn">Unlock</button>
+    </div>
+</div>
+
+<div class="tool-panel" id="toolCard" style="display:none;">
+    <p class="tool-title">🔗 Condogames Shortener</p>
+    <p class="tool-subtitle">Pendekkan link jadi condogames.my.id/kode — lengkap dengan preview</p>
+
+    <input type="text" class="url-field" id="urlInput" placeholder="https://contoh.com/halaman-kamu">
+    <div class="hint" id="hint">Link harus diawali https://</div>
+    <button class="btn-primary" id="startBtn" disabled>Start Short Link</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    const loginCard = document.getElementById('loginCard');
+    const toolCard = document.getElementById('toolCard');
+    const keyInput = document.getElementById('keyInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginHint = document.getElementById('loginHint');
+    const toggleVis = document.getElementById('toggleVis');
+
+    let ACCESS_KEY = "";
+
+    toggleVis.addEventListener('click', () => {
+        keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
+    });
+
+    const savedKey = sessionStorage.getItem('shortener_key');
+    if (savedKey) {
+        verifyKey(savedKey, true);
+    }
+
+    loginBtn.addEventListener('click', () => attemptLogin());
+    keyInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') attemptLogin();
+    });
+
+    function attemptLogin() {
+        const key = keyInput.value.trim();
+        if (!key) return;
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Memeriksa...";
+        verifyKey(key, false);
+    }
+
+    async function verifyKey(key, silent) {
+        try {
+            const res = await fetch(`shortener.php?action=verify&key=${encodeURIComponent(key)}`);
+            const data = await res.json();
+
+            if (data.success) {
+                ACCESS_KEY = key;
+                sessionStorage.setItem('shortener_key', key);
+                loginCard.style.display = 'none';
+                toolCard.style.display = 'block';
+            } else if (!silent) {
+                loginHint.style.visibility = 'visible';
+                sessionStorage.removeItem('shortener_key');
+            }
+        } catch (err) {
+            if (!silent) {
+                loginHint.textContent = "Gagal terhubung ke server.";
+                loginHint.style.visibility = 'visible';
+            }
+        }
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Unlock";
+    }
+
+    const urlInput = document.getElementById('urlInput');
+    const hint = document.getElementById('hint');
+    const startBtn = document.getElementById('startBtn');
+    const result = document.getElementById('result');
+    let lastShortUrl = "";
+
+    urlInput.addEventListener('input', () => {
+        const val = urlInput.value.trim();
+        const isValid = /^https:\/\/.+/i.test(val);
+
+        startBtn.disabled = !isValid;
+
+        if (val.length === 0) {
+            hint.textContent = "Link harus diawali https://";
+            hint.classList.remove('error', 'ok');
+        } else if (!isValid) {
+            hint.textContent = "Format salah. Link harus diawali https://";
+            hint.classList.add('error');
+            hint.classList.remove('ok');
+        } else {
+            hint.textContent = "Format valid";
+            hint.classList.add('ok');
+            hint.classList.remove('error');
+        }
+    });
+
+    startBtn.addEventListener('click', async () => {
+        const url = urlInput.value.trim();
+        if (!/^https:\/\/.+/i.test(url)) return;
+
+        startBtn.disabled = true;
+        startBtn.textContent = "Memproses...";
+        result.classList.remove('show');
+
+        try {
+            const apiUrl = `shortener.php?action=create&format=json&key=${encodeURIComponent(ACCESS_KEY)}&url=${encodeURIComponent(url)}`;
+            const res = await fetch(apiUrl);
+            const data = await res.json();
+
+            if (data.success) {
+                lastShortUrl = data.short_url;
+                renderPreview(data);
+            } else {
+                renderError(data.error || "Terjadi kesalahan.");
+            }
+        } catch (err) {
+            renderError("Gagal terhubung ke server.");
+        }
+
+        startBtn.disabled = false;
+        startBtn.textContent = "Start Short Link";
+    });
+
+    function renderPreview(data) {
+        const meta = data.meta || {};
+        const title = escapeHtml(meta.title || data.short_url);
+        const desc = escapeHtml(meta.description || "");
+        const image = meta.image || "";
+        const favicon = meta.favicon || "";
+        const originalUrl = data.original_url || data.short_url;
+
+        result.innerHTML = `
+            ${image ? `<img class="preview-img" src="${escapeHtml(image)}" onerror="this.style.display='none'">` : ''}
+            <div class="preview-body">
+                <div class="preview-header">
+                    ${favicon ? `<img src="${escapeHtml(favicon)}" onerror="this.style.display='none'">` : ''}
+                    <span>Preview</span>
+                </div>
+                <p class="preview-title">${title}</p>
+                ${desc ? `<p class="preview-desc">${desc}</p>` : ''}
+                <div class="short-link-row">
+                    <a href="${escapeHtml(data.short_url)}" target="_blank" title="${escapeHtml(data.short_url)}">${escapeHtml(originalUrl)}</a>
+                    <button class="copy-btn" onclick="copyLink()">Salin</button>
+                </div>
+            </div>
+            <div class="markdown-box">
+                <label>Format teks [link asli](short link)</label>
+                <textarea id="markdownText" readonly onclick="this.select()">[${escapeHtml(originalUrl)}](${escapeHtml(data.short_url)})</textarea>
+                <button class="copy-btn" onclick="copyMarkdown()" style="width:100%;">Salin Format Ini</button>
+            </div>
+        `;
+        result.classList.remove('error-box');
+        result.classList.add('show');
+    }
+
+    function renderError(message) {
+        result.innerHTML = escapeHtml(message);
+        result.classList.add('error-box', 'show');
+    }
+
+    function copyLink() {
+        navigator.clipboard.writeText(lastShortUrl).then(() => {
+            const btn = document.querySelector('.copy-btn');
+            if (btn) {
+                const original = btn.textContent;
+                btn.textContent = "Tersalin!";
+                setTimeout(() => btn.textContent = original, 1500);
+            }
+        });
+    }
+
+    function copyMarkdown() {
+        const textarea = document.getElementById('markdownText');
+        if (!textarea) return;
+        navigator.clipboard.writeText(textarea.value).then(() => {
+            const btn = document.querySelectorAll('.copy-btn')[1];
+            if (btn) {
+                const original = btn.textContent;
+                btn.textContent = "Tersalin!";
+                setTimeout(() => btn.textContent = original, 1500);
+            }
+        });
+    }
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+</script>
+
+</body>
+</html>
