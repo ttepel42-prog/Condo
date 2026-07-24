@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIMERX Short Link</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+<div class="card">
+
+<h1>CIMERX SHORT LINK</h1>
+
+<p>Buat short link gratis.</p>
+
+<input
+type="url"
+id="longUrl"
+placeholder="https://example.com">
+
+<button id="createBtn">
+START SHORT LINK
+</button>
+
+<div id="loading" class="loading">
+Membuat Short Link...
+</div>
+
+<div id="result" class="result" style="display:none;">
+
+<h3>Short Link Berhasil</h3>
+
+<input
+id="shortUrl"
+readonly>
+
+<button id="copyBtn">
+COPY LINK
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
