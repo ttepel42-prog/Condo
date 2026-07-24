@@ -64,6 +64,36 @@ function showToast(text){
 }
 
 // ======================
+// TOAST
+// ======================
+
+function showToast(text){
+
+    toast.innerHTML = text;
+
+    toast.style.display = "block";
+
+    setTimeout(()=>{
+
+        toast.style.display = "none";
+
+    },2000);
+
+}
+
+// ======================
+// CLEAN HYPER TEXT
+// ======================
+
+function cleanHyperText(url){
+
+    return url
+        .replace(/^https?:\/\/www\./i,"https://")
+        .replace(/^https?:\/\/[^\/]*roblox[^\/]*\/games/i,"https://roblox.com/games");
+
+}
+
+// ======================
 // LOGIN
 // ======================
 
@@ -251,8 +281,9 @@ start.addEventListener("click",async()=>{
 
         shortBox.value = short;
 
-        markdownBox.value =
-        `[${original}](${short})`;
+       const hyperText = cleanHyperText(original);
+
+       markdownBox.value = `[${hyperText}] (${short})`;
 
         showPreview(original);
 
@@ -355,8 +386,8 @@ document.addEventListener("keydown",(e)=>{
 // RESET
 // ======================
 
-function resetForm(){
-
+function resetForm(){ 
+  
     loading.style.display = "none";
 
     result.style.display = "none";
