@@ -1,86 +1,64 @@
-// ==========================
-// Firebase SDK
-// ==========================
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 
 import {
-
-    getFirestore,
-
-    doc,
-
-    getDoc,
-
-    setDoc,
-
-    updateDoc,
-
-    increment
-
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  increment
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-// ==========================
-// Firebase Config
-// ==========================
 
 const firebaseConfig = {
 
-    apiKey: "AIzaSyB8SB-GZiR-Q76sx-VTg0JtkiBmqUTqIiM",
+  apiKey: "AIzaSyB8SB-GZiR-Q76sx-VTg0JtkiBmqUTqIiM",
 
-    authDomain: "cimerx-10ea2.firebaseapp.com",
+  authDomain: "cimerx-10ea2.firebaseapp.com",
 
-    projectId: "cimerx-10ea2",
+  projectId: "cimerx-10ea2",
 
-    storageBucket: "cimerx-10ea2.firebasestorage.app",
+  storageBucket: "cimerx-10ea2.firebasestorage.app",
 
-    messagingSenderId: "6223214966",
+  messagingSenderId: "6223214966",
 
-    appId: "1:6223214966:web:088e36fcf6eca1beb4e257",
+  appId: "1:6223214966:web:088e36fcf6eca1beb4e257",
 
-    measurementId: "G-J3QZ70NZZ6"
+  measurementId: "G-J3QZ70NZZ6"
 
 };
-
-// ==========================
-// Init Firebase
-// ==========================
 
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
-// ==========================
-// Random Code
-// ==========================
+// ==============================
+// RANDOM CODE
+// ==============================
 
 function randomCode(length = 6){
 
     const chars =
-
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    let code = "";
+    let result = "";
 
     for(let i=0;i<length;i++){
 
-        code += chars.charAt(
-
+        result += chars.charAt(
             Math.floor(Math.random()*chars.length)
-
         );
 
     }
 
-    return code;
+    return result;
 
 }
 
-// ==========================
-// Create Short Link
-// ==========================
+// ==============================
+// CREATE SHORT
+// ==============================
 
-export async function createShort(url){
+export async function createShort(originalURL){
 
     let code;
 
@@ -89,9 +67,7 @@ export async function createShort(url){
         code = randomCode();
 
         const check = await getDoc(
-
             doc(db,"shortlinks",code)
-
         );
 
         if(!check.exists()){
@@ -108,11 +84,12 @@ export async function createShort(url){
 
         {
 
-            url:url,
+            // URL DISIMPAN APA ADANYA
+            url: originalURL,
 
-            created:Date.now(),
+            created: Date.now(),
 
-            clicks:0
+            clicks: 0
 
         }
 
@@ -122,16 +99,14 @@ export async function createShort(url){
 
 }
 
-// ==========================
-// Get Short Link
-// ==========================
+// ==============================
+// GET SHORT
+// ==============================
 
 export async function getShort(code){
 
     const snap = await getDoc(
-
         doc(db,"shortlinks",code)
-
     );
 
     if(!snap.exists()){
@@ -144,9 +119,9 @@ export async function getShort(code){
 
 }
 
-// ==========================
-// Add Click
-// ==========================
+// ==============================
+// ADD CLICK
+// ==============================
 
 export async function addClick(code){
 
@@ -158,7 +133,7 @@ export async function addClick(code){
 
             {
 
-                clicks:increment(1)
+                clicks: increment(1)
 
             }
 
@@ -169,25 +144,5 @@ export async function addClick(code){
         console.log(e);
 
     }
-
-}
-
-// ==========================
-// Get Preview
-// ==========================
-
-export async function getPreview(url){
-
-    return{
-
-        title:"Roblox",
-
-        description:url,
-
-        image:"https://tr.rbxcdn.com/180DAY-4db6fb3e4b7d182d4c6d2d77d3b8e0c8/768/432/Image/Webp/noFilter",
-
-        favicon:"https://www.roblox.com/favicon.ico"
-
-    };
 
 }
