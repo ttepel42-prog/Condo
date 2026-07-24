@@ -2,9 +2,9 @@ import { createShort } from "./firebase.js";
 
 const API_KEY = "CIMEMEX";
 
-// =========================
-// Login
-// =========================
+// ======================
+// LOGIN
+// ======================
 
 const loginPage = document.getElementById("loginPage");
 const dashboard = document.getElementById("dashboard");
@@ -15,15 +15,14 @@ const logoutBtn = document.getElementById("logoutBtn");
 const apikey = document.getElementById("apikey");
 const loginStatus = document.getElementById("loginStatus");
 
-// =========================
-// Dashboard
-// =========================
+// ======================
+// DASHBOARD
+// ======================
 
 const url = document.getElementById("url");
 const start = document.getElementById("start");
 
 const loading = document.getElementById("loading");
-
 const result = document.getElementById("result");
 
 const shortBox = document.getElementById("short");
@@ -34,9 +33,21 @@ const copyMarkdown = document.getElementById("copyMarkdown");
 
 const toast = document.getElementById("toast");
 
-// =========================
-// Toast
-// =========================
+// Preview
+
+const preview = document.getElementById("preview");
+
+const previewImage = document.getElementById("previewImage");
+
+const favicon = document.getElementById("favicon");
+
+const title = document.getElementById("title");
+
+const description = document.getElementById("description");
+
+// ======================
+// TOAST
+// ======================
 
 function showToast(text){
 
@@ -52,62 +63,66 @@ function showToast(text){
 
 }
 
-// =========================
-// Login
-// =========================
+// ======================
+// LOGIN
+// ======================
 
 function openDashboard(){
 
-    loginPage.style.display="none";
+    loginPage.style.display = "none";
 
-    dashboard.style.display="block";
+    dashboard.style.display = "flex";
 
     sessionStorage.setItem("login","true");
 
 }
 
-function logout(){
+function openLogin(){
 
-    sessionStorage.removeItem("login");
+    dashboard.style.display = "none";
 
-    dashboard.style.display="none";
-
-    loginPage.style.display="flex";
-
-    apikey.value="";
+    loginPage.style.display = "flex";
 
 }
 
-if(sessionStorage.getItem("login")=="true"){
+if(sessionStorage.getItem("login")==="true"){
 
     openDashboard();
 
 }
 
-loginBtn.onclick=()=>{
+loginBtn.addEventListener("click",()=>{
 
-    if(apikey.value===API_KEY){
-
-        loginStatus.innerHTML="✅ Login Berhasil";
-
-        loginStatus.style.color="#00ff88";
-
-        openDashboard();
-
-    }else{
+    if(apikey.value.trim()!==API_KEY){
 
         loginStatus.innerHTML="❌ API Key Salah";
 
-        loginStatus.style.color="red";
+        loginStatus.style.color="#ff4444";
+
+        return;
 
     }
 
-};
+    loginStatus.innerHTML="✅ Login Berhasil";
 
-logoutBtn.onclick=logout;
-// =========================
-// Clean URL
-// =========================
+    loginStatus.style.color="#00ff88";
+
+    openDashboard();
+
+});
+
+logoutBtn.addEventListener("click",()=>{
+
+    sessionStorage.removeItem("login");
+
+    apikey.value="";
+
+    openLogin();
+
+});
+// ======================
+// CLEAN URL
+// ======================
 
 function cleanURL(text){
 
@@ -116,11 +131,11 @@ function cleanURL(text){
     text = text.trim();
 
     // Ambil URL jika ada teks lain
-    const urlMatch = text.match(/https?:\/\/[^\s]+/i);
+    const match = text.match(/https?:\/\/[^\s]+/i);
 
-    if(urlMatch){
+    if(match){
 
-        text = urlMatch[0];
+        text = match[0];
 
     }
 
@@ -134,12 +149,12 @@ function cleanURL(text){
     // Hapus www.
     text = text.replace(/^https?:\/\/www\./i,"https://");
 
-    // Paksa domain menjadi roblox.com
+    // Paksa menjadi roblox.com
     const games = text.match(/\/games\/.+/i);
 
     if(games){
 
-        return "https://roblox.com" + games[0];
+        text = "https://roblox.com" + games[0];
 
     }
 
@@ -147,9 +162,9 @@ function cleanURL(text){
 
 }
 
-// =========================
-// Validasi URL
-// =========================
+// ======================
+// VALIDASI
+// ======================
 
 function validate(){
 
@@ -181,11 +196,31 @@ url.addEventListener("blur",()=>{
 
 });
 
-// =========================
-// START
-// =========================
+// ======================
+// PREVIEW SEMENTARA
+// ======================
 
-start.onclick = async()=>{
+function showPreview(link){
+
+    preview.style.display = "block";
+
+    previewImage.src =
+    "https://tr.rbxcdn.com/180DAY-4db6fb3e4b7d182d4c6d2d77d3b8e0c8/768/432/Image/Webp/noFilter";
+
+    favicon.src =
+    "https://www.roblox.com/favicon.ico";
+
+    title.textContent = "Roblox";
+
+    description.textContent = link;
+
+}
+
+// ======================
+// START
+// ======================
+
+start.addEventListener("click",async()=>{
 
     let original = cleanURL(url.value);
 
@@ -203,6 +238,8 @@ start.onclick = async()=>{
 
     result.style.display = "none";
 
+    preview.style.display = "none";
+
     start.disabled = true;
 
     try{
@@ -217,15 +254,17 @@ start.onclick = async()=>{
         markdownBox.value =
         `[${original}](${short})`;
 
+        showPreview(original);
+
         result.style.display = "block";
 
         showToast("Short Link berhasil dibuat");
 
-    }catch(e){
+    }catch(err){
 
-        console.log(e);
+        console.log(err);
 
-        showToast("Terjadi kesalahan");
+        showToast("Gagal membuat Short Link");
 
     }
 
@@ -233,64 +272,69 @@ start.onclick = async()=>{
 
     validate();
 
-};
-// =========================
-// Copy Short Link
-// =========================
+});
+// ======================
+// COPY SHORT LINK
+// ======================
 
-copyShort.onclick = async()=>{
+copyShort.addEventListener("click", async () => {
 
-    try{
+    if (!shortBox.value) {
+        showToast("Belum ada Short Link");
+        return;
+    }
+
+    try {
 
         await navigator.clipboard.writeText(shortBox.value);
 
-        showToast("Short Link berhasil disalin");
-
-    }catch{
+    } catch {
 
         shortBox.select();
 
         document.execCommand("copy");
 
-        showToast("Short Link berhasil disalin");
-
     }
 
-};
+    showToast("Short Link berhasil disalin");
 
-// =========================
-// Copy Hyper Link
-// =========================
+});
 
-copyMarkdown.onclick = async()=>{
+// ======================
+// COPY HYPER LINK
+// ======================
 
-    try{
+copyMarkdown.addEventListener("click", async () => {
+
+    if (!markdownBox.value) {
+        showToast("Belum ada Hyper Link");
+        return;
+    }
+
+    try {
 
         await navigator.clipboard.writeText(markdownBox.value);
 
-        showToast("Hyper Link berhasil disalin");
-
-    }catch{
+    } catch {
 
         markdownBox.select();
 
         document.execCommand("copy");
 
-        showToast("Hyper Link berhasil disalin");
-
     }
 
-};
+    showToast("Hyper Link berhasil disalin");
 
-// =========================
-// Enter = Login / Start
-// =========================
+});
+
+// ======================
+// ENTER
+// ======================
 
 document.addEventListener("keydown",(e)=>{
 
     if(e.key !== "Enter") return;
 
-    // Jika masih di halaman login
     if(loginPage.style.display !== "none"){
 
         loginBtn.click();
@@ -299,7 +343,6 @@ document.addEventListener("keydown",(e)=>{
 
     }
 
-    // Jika sudah di dashboard
     if(!start.disabled){
 
         start.click();
@@ -308,40 +351,70 @@ document.addEventListener("keydown",(e)=>{
 
 });
 
-// =========================
-// Reset
-// =========================
+// ======================
+// RESET
+// ======================
 
-function reset(){
+function resetForm(){
 
     loading.style.display = "none";
 
     result.style.display = "none";
 
-    validate();
+    preview.style.display = "none";
 
 }
 
-reset();
+resetForm();
 
-// =========================
-// Auto Focus
-// =========================
+validate();
 
-if(sessionStorage.getItem("login")=="true"){
+// ======================
+// AUTO FOCUS
+// ======================
 
-    setTimeout(()=>{
+window.addEventListener("load",()=>{
+
+    if(sessionStorage.getItem("login")==="true"){
 
         url.focus();
 
-    },200);
-
-}else{
-
-    setTimeout(()=>{
+    }else{
 
         apikey.focus();
 
-    },200);
+    }
 
-}
+});
+
+// ======================
+// LOGOUT
+// ======================
+
+logoutBtn.addEventListener("click",()=>{
+
+    sessionStorage.removeItem("login");
+
+    result.style.display = "none";
+
+    preview.style.display = "none";
+
+    shortBox.value = "";
+
+    markdownBox.value = "";
+
+    url.value = "";
+
+    apikey.value = "";
+
+    loginStatus.innerHTML = "";
+
+    openLogin();
+
+});
+
+// ======================
+// INIT
+// ======================
+
+validate();
