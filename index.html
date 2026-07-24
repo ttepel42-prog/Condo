@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CIMERX Hyper + Short Link</title>
-
-<meta name="theme-color" content="#0f172a">
+<title>CIMERX Short Link</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -17,39 +14,22 @@
 
 <body>
 
+<!-- ========================= -->
 <!-- LOGIN -->
+<!-- ========================= -->
 
 <div id="loginPage" class="page">
 
-<div class="card loginCard">
+<div class="login-box">
 
 <h1>CIMERX</h1>
 
-<p class="subtitle">
-
-Hyper Link + Short Link
-
-</p>
-
-<div class="logo">
-
-🔐
-
-</div>
-
-<label>
-
-Masukkan API Key
-
-</label>
+<p>Hyper Link + Short Link Generator</p>
 
 <input
-
 type="password"
-
 id="apikey"
-
-placeholder="API KEY">
+placeholder="Masukkan API Key">
 
 <button id="loginBtn">
 
@@ -57,31 +37,23 @@ MASUK
 
 </button>
 
-<p id="loginStatus">
-
-Masukkan API Key untuk melanjutkan
-
-</p>
+<p id="loginStatus"></p>
 
 </div>
 
 </div>
 
+<!-- ========================= -->
 <!-- DASHBOARD -->
+<!-- ========================= -->
 
-<div
+<div id="dashboard" class="page" style="display:none;">
 
-id="dashboard"
-
-class="page"
-
-style="display:none;">
-
-<div class="card">
+<div class="container">
 
 <div class="header">
 
-<h1>CIMERX</h1>
+<h2>CIMERX Dashboard</h2>
 
 <button id="logoutBtn">
 
@@ -91,12 +63,6 @@ Logout
 
 </div>
 
-<p class="subtitle">
-
-Hyper Link + Short Link Generator
-
-</p>
-
 <label>
 
 Masukkan URL Roblox
@@ -104,21 +70,12 @@ Masukkan URL Roblox
 </label>
 
 <input
-
 id="url"
-
 type="text"
-
-placeholder="https://roblox.com/games/..."
-
-autocomplete="off"
-
-spellcheck="false">
+placeholder="https://roblox.com/games/...">
 
 <button
-
 id="start"
-
 disabled>
 
 START
@@ -126,9 +83,7 @@ START
 </button>
 
 <div
-
 id="loading"
-
 style="display:none;">
 
 Membuat Short Link...
@@ -136,29 +91,19 @@ Membuat Short Link...
 </div>
 
 <div
-
 id="preview"
-
 style="display:none;">
 
 <img
-
 id="previewImage"
-
 src=""
-
 alt="Preview">
 
-<div class="previewInfo">
-
-<div class="top">
+<div class="previewContent">
 
 <img
-
 id="favicon"
-
 src=""
-
 alt="">
 
 <div>
@@ -180,9 +125,9 @@ Preview akan muncul di sini
 </div>
 
 </div>
-
-</div>
+<!-- ========================= -->
 <!-- HASIL -->
+<!-- ========================= -->
 
 <div id="result" style="display:none;">
 
@@ -193,9 +138,7 @@ Short Link
 </label>
 
 <input
-
 id="short"
-
 readonly>
 
 <button id="copyShort">
@@ -211,9 +154,8 @@ Hyper Link
 </label>
 
 <textarea
-
 id="markdown"
-
+rows="5"
 readonly>
 
 </textarea>
@@ -230,23 +172,25 @@ Copy Hyper Link
 
 </div>
 
+<!-- ========================= -->
 <!-- TOAST -->
+<!-- ========================= -->
 
-<div
-
-id="toast"
-
-class="toast">
+<div id="toast" class="toast">
 
 Berhasil
 
 </div>
 
+<!-- ========================= -->
 <!-- FIREBASE -->
+<!-- ========================= -->
 
 <script type="module" src="firebase.js"></script>
 
+<!-- ========================= -->
 <!-- SCRIPT -->
+<!-- ========================= -->
 
 <script type="module" src="script.js"></script>
 
