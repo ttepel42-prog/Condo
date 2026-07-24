@@ -67,7 +67,7 @@ function cleanHyperText(link){
 
         const u = new URL(link);
 
-        return "https://roblox.com" + u.pathname + u.search;
+        return "https*:*//roblox.com" + u.pathname + u.search;
 
     }catch{
 
